@@ -1,5 +1,5 @@
-import WelcomePage from "../pages/WelcomePage";
-import HomePage from "../pages/HomePage";
+import WelcomePage from "./pages/WelcomePage";
+import HomePage from "./pages/HomePage";
 
 const Routes = [
     {

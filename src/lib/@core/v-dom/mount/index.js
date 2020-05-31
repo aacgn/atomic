@@ -53,7 +53,7 @@ export function mountExternalSource(externalSource, parentDOMNode) {
 
 
 export function mountAtom(atom, parentDOMNode) {
-    const { tag, className, style, props } = atom;
+    const { tag, className, style, onClick, props } = atom;
 
     const domNode = document.createElement(tag);
 
@@ -71,13 +71,17 @@ export function mountAtom(atom, parentDOMNode) {
         Object.keys(style).forEach((sKey) => domNode.style[sKey] = style[sKey]);
     }
 
+    if (onClick !== undefined) {
+        domNode.addEventListener('click', onClick);
+    }
+
     parentDOMNode.appendChild(domNode);
 
     return domNode;
 }
 
 export function mountMolecule(molecule, parentDOMNode) {
-    const { className, style, props } = molecule;
+    const { className, style, onClick, props } = molecule;
 
     const domNode = document.createElement('div');
 
@@ -106,13 +110,17 @@ export function mountMolecule(molecule, parentDOMNode) {
         Object.keys(style).forEach((sKey) => domNode.style[sKey] = style[sKey]);
     }
 
+    if (onClick !== undefined) {
+        domNode.addEventListener('click', onClick);
+    }
+
     parentDOMNode.appendChild(domNode);
 
     return domNode;
 }
 
 export function mountOrganism(organism, parentDOMNode) {
-    const { className, style, props } = organism;
+    const { className, style, onClick, props } = organism;
 
     const domNode = document.createElement('div');
 
@@ -141,13 +149,17 @@ export function mountOrganism(organism, parentDOMNode) {
         Object.keys(style).forEach((sKey) => domNode.style[sKey] = style[sKey]);
     }
 
+    if (onClick !== undefined) {
+        domNode.addEventListener('click', onClick);
+    }
+
     parentDOMNode.appendChild(domNode);
 
     return domNode;
 }
 
 export function mountTemplate(template, parentDOMNode) {
-    const { name, className, style, props } = template;
+    const { name, className, style, onClick, props } = template;
 
     const domNode = document.createElement('div');
 
@@ -174,6 +186,10 @@ export function mountTemplate(template, parentDOMNode) {
 
     if (style !== undefined) {
         Object.keys(style).forEach((sKey) => domNode.style[sKey] = style[sKey]);
+    }
+
+    if (onClick !== undefined) {
+        domNode.addEventListener('click', onClick);
     }
 
     parentDOMNode.appendChild(domNode);

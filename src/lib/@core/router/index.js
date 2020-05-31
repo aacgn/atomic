@@ -1,4 +1,5 @@
-import { mountTemplate } from "../v-dom/mount/index";
+import { mountTemplate, mountExternalSource } from "../v-dom/mount/index";
+import { vDOMType } from "../v-dom/enums/v-dom-type.enum";
 
 export class Router {
     constructor(routes, parentDOMNode) {
@@ -34,9 +35,19 @@ export class Router {
         const matchRoute = this._routes.find(r => r.path === this.currentPath());
         if (matchRoute) {
             const template = matchRoute.template;
-            if (this._parentDOMNode)
+            if (template && this._parentDOMNode)
                 this._parentDOMNode.innerHTML = "";
-                mountTemplate(template, this._parentDOMNode);
+
+                switch(template.type) {
+                    case vDOMType.TEMPLATE:
+                        mountTemplate(template, this._parentDOMNode);
+                        break;
+                    case vDOMType.EXTERNAL_SOURCE:
+                        mountExternalSource(template, this._parentDOMNode);
+                        break;
+                    default:
+                        break;
+                }
         }
     }
 }

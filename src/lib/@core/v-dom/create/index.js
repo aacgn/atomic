@@ -13,13 +13,14 @@ export function createExternalSource(config) {
 }
 
 export function createAtom(config, tag, textContent = null) {
-    const { className, style } = config;
+    const { className, style, onClick } = config;
 
     return {
         type: vDOMType.ATOM,
         tag: tag,
         style: style,
         className: className,
+        onClick: onClick,
         props: {
             textContent: textContent
         },
@@ -28,12 +29,13 @@ export function createAtom(config, tag, textContent = null) {
 }
 
 export function createMolecule(config, children = null) {
-    const { className, style } = config;
+    const { className, style, onClick } = config;
 
     return {
         type: vDOMType.MOLECULE,
         style: style,
         className: className,
+        onClick: onClick,
         props: {
             children: children
         },
@@ -42,13 +44,14 @@ export function createMolecule(config, children = null) {
 }
 
 export function createOrganism(config, children = null) {
-    const { name, className, style } = config;
+    const { name, className, style, onClick } = config;
 
     return {
         type: vDOMType.ORGANISM,
         name: name,
         style: style,
         className: className,
+        onClick: onClick,
         props: {
             children: children
         },
@@ -57,13 +60,14 @@ export function createOrganism(config, children = null) {
 }
 
 export function createTemplate(config, children = null) {
-    const { name, className, style } = config;
+    const { name, className, style, onClick } = config;
 
     return {
         type: vDOMType.TEMPLATE,
         name: name,
         style: style,
         className: className,
+        onClick: onClick,
         props: {
             children: children
         },
