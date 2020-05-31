@@ -1,17 +1,5 @@
-import { boostrap } from "../src/index";
+import { boostrap } from "../src/lib/index";
 
-import WelcomePage from "./pages/WelcomePage";
-import HomePage from "./pages/HomePage";
-
-const Routes = [
-    {
-        path: '/',
-        template: WelcomePage
-    },
-    {
-        path: '/home',
-        template: HomePage
-    }
-];
+import Routes from "./router/router";
 
 boostrap(Routes, document.getElementById('root'));

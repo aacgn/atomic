@@ -1,4 +1,4 @@
-import { createTemplate } from "../../src/index";
+import { createTemplate } from "../../src/lib/index";
 
 import DynamicMessage from "../components/DynamicMessage";
 
