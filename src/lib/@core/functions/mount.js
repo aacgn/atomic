@@ -51,56 +51,42 @@ export function mountExternalSource(externalSource, parentDOMNode) {
     return domNode;
 }
 
+export function mountInternalSource(internalSource, parentDOMNode) {
 
-export function mountAtom(atom, parentDOMNode) {
-    const { tag, className, style, onClick, props } = atom;
+    const { type, tag, props, className, style, onClick } = internalSource;
 
     const domNode = document.createElement(tag);
 
-    atom.dom = domNode;
+    internalSource.dom = domNode;
+    
+    if (props.children) {
+        props.children.forEach(child => {
+            switch(child.type) {
+                case vDOMType.EXTERNAL_SOURCE:
+                    mountExternalSource(child, domNode);
+                    break;
+                case vDOMType.ORGANISM:
+                    if (type !== vDOMType.TEMPLATE)
+                        throw `${vDOMType.ORGANISM} must be a child of ${vDOMType.TEMPLATE}.`;
+                    mountInternalSource(child, domNode);
+                    break;
+                case vDOMType.MOLECULE:
+                    if (type !== vDOMType.ORGANISM)
+                        throw  `${vDOMType.MOLECULE} must be a child of ${vDOMType.ORGANISM}.`;
+                    mountInternalSource(child, domNode);
+                case vDOMType.ATOM:
+                    if (type !== vDOMType.MOLECULE)
+                        throw  `${vDOMType.ATOM} must be a child of ${vDOMType.MOLECULE}.`;
+                    mountInternalSource(child, domNode);
+                default:
+                    break;
+            }
+        });
+    }
 
     if (props.textContent) {
         domNode.textContent = props.textContent;
     }
-
-    if (className !== undefined) {
-        domNode.className = className;
-    }
-
-    if (style !== undefined) {
-        Object.keys(style).forEach((sKey) => domNode.style[sKey] = style[sKey]);
-    }
-
-    if (onClick !== undefined) {
-        domNode.addEventListener('click', onClick);
-    }
-
-    parentDOMNode.appendChild(domNode);
-
-    return domNode;
-}
-
-export function mountMolecule(molecule, parentDOMNode) {
-    const { className, style, onClick, props } = molecule;
-
-    const domNode = document.createElement('div');
-
-    molecule.dom = domNode;
-    
-    if (props.children) {
-        props.children.forEach(child => {
-            switch(child.type) {
-                case vDOMType.ATOM:
-                    mountAtom(child, domNode);
-                    break;
-                case vDOMType.EXTERNAL_SOURCE:
-                    mountExternalSource(child, domNode);
-                    break;
-                default:
-                    break;
-            }
-        });
-    }
     
     if (className !== undefined) {
         domNode.className = className;
@@ -119,80 +105,23 @@ export function mountMolecule(molecule, parentDOMNode) {
     return domNode;
 }
 
-export function mountOrganism(organism, parentDOMNode) {
-    const { className, style, onClick, props } = organism;
-
-    const domNode = document.createElement('div');
-
-    organism.dom = domNode;
-    
-    if (props.children) {
-        props.children.forEach(child => {
-            switch(child.type) {
-                case vDOMType.MOLECULE:
-                    mountMolecule(child, domNode);
+export function mount(atomicPage, parentDOMNode) {
+    parentDOMNode.innerHTML = "";
+    if (atomicPage) {
+        const { context } = atomicPage;
+        const instance = new atomicPage(context);
+        const template = instance.template();
+        if (template) {
+            switch(template.type) {
+                case vDOMType.TEMPLATE:
+                    mountInternalSource(template, parentDOMNode);
                     break;
                 case vDOMType.EXTERNAL_SOURCE:
-                    mountExternalSource(child, domNode);
+                    mountExternalSource(template, parentDOMNode);
                     break;
                 default:
                     break;
             }
-        });
+        }
     }
-    
-    if (className !== undefined) {
-        domNode.className = className;
-    }
-
-    if (style !== undefined) {
-        Object.keys(style).forEach((sKey) => domNode.style[sKey] = style[sKey]);
-    }
-
-    if (onClick !== undefined) {
-        domNode.addEventListener('click', onClick);
-    }
-
-    parentDOMNode.appendChild(domNode);
-
-    return domNode;
-}
-
-export function mountTemplate(template, parentDOMNode) {
-    const { name, className, style, onClick, props } = template;
-
-    const domNode = document.createElement('div');
-
-    if (props.children) {
-        props.children.forEach(child => {
-            switch(child.type) {
-                case vDOMType.ORGANISM:
-                    mountOrganism(child, domNode);
-                    break;
-                case vDOMType.EXTERNAL_SOURCE:
-                    mountExternalSource(child, domNode);
-                    break;
-                default:
-                    break;
-            }
-        });
-    }    
-
-    template.dom = domNode;
-    
-    if (className !== undefined) {
-        domNode.className = className;
-    }
-
-    if (style !== undefined) {
-        Object.keys(style).forEach((sKey) => domNode.style[sKey] = style[sKey]);
-    }
-
-    if (onClick !== undefined) {
-        domNode.addEventListener('click', onClick);
-    }
-
-    parentDOMNode.appendChild(domNode);
-
-    return domNode;
 }

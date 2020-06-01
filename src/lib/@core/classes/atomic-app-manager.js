@@ -1,9 +1,9 @@
-import { Router } from "../router/index";
+import { AtomicAppRouter } from "./atomic-app-router";
 
-export class AppManager {
+export class AtomicAppManager {
     constructor(store, routes, parentDOMNode) {
         this._store = store;
-        this._router = new Router(routes, parentDOMNode);
+        this._appRouter = new AtomicAppRouter(routes, parentDOMNode);
 
         this.useMessageInterceptor();
         this.useWindowGlobalVariables();
@@ -15,7 +15,7 @@ export class AppManager {
             if (data && data.hasAtomicSignature) {
                 switch(data.event) {
                     case "navigate":
-                        this._router.navigateTo(data.data );
+                        this._appRouter.navigateTo(data.data );
                         break;
                     case "store":
                         this._store[data.name] = data.data;
@@ -28,6 +28,6 @@ export class AppManager {
     }
 
     useWindowGlobalVariables() {
-        window.AppStore = this._store;
+        window.AtomicAppStore = this._store;
     }
 }

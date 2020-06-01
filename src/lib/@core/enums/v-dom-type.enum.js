@@ -1,0 +1,8 @@
+export const vDOMType = {
+    EXTERNAL_SOURCE: "EXTERNAL_SOURCE",
+    ATOM: "ATOM",
+    MOLECULE: "MOLECULE",
+    ORGANISM: "ORGANISM",
+    TEMPLATE: "TEMPLATE",
+    PAGE: "PAGE"
+};

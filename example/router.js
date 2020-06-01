@@ -1,14 +1,14 @@
-import WelcomePage from "./pages/WelcomePage";
-import HomePage from "./pages/HomePage";
+import WelcomePage from "./pages/WelcomePage/index";
+import HomePage from "./pages/HomePage/index";
 
 const Routes = [
     {
         path: '/',
-        template: WelcomePage
+        page: WelcomePage
     },
     {
         path: '/home',
-        template: HomePage
+        page: HomePage
     }
 ];
 
