@@ -1,4 +1,4 @@
-import { mount } from "../functions/mount";
+import { mount, unmount } from "../functions/mount";
 
 export class AtomicAppRouter {
     constructor(routes, parentDOMNode) {
@@ -36,6 +36,9 @@ export class AtomicAppRouter {
             const page = matchRoute.page;
             if (page && this._parentDOMNode)
                 mount(page, this._parentDOMNode);
+        }
+        else {
+            unmount(this._parentDOMNode);
         }
     }
 }

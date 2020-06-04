@@ -1,8 +1,7 @@
 import { createTemplate } from "../functions/create";
 
 export class AtomicPage {
-    constructor(context){
-        this.context = context || {};
+    constructor(){
     }
 
     setContext(partialContext){

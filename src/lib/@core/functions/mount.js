@@ -23,6 +23,7 @@ export function mountExternalSource(externalSource, parentDOMNode) {
 
     if (sourceUrl !== undefined) {
         domNode.addEventListener('load', async () => {
+            const contentWindow = domNode.contentWindow;
             const contentDocument = domNode.contentDocument;
             const containerHTMLDocument = document.implementation.createHTMLDocument();
             const containerHTML = await fetch(sourceUrl, { mode: 'cors', referrerPolicy: 'origin-when-cross-origin'})
@@ -38,6 +39,9 @@ export function mountExternalSource(externalSource, parentDOMNode) {
                 const containerBase = document.createElement('base');
                 containerBase.href = sourceUrl;
                 containerHTMLDocument.head.insertAdjacentElement('afterbegin', containerBase);
+                if (contentWindow) {
+                    Object.defineProperty(contentWindow, 'AtomicAppStore', { value: window.AtomicAppStore });
+                }
                 if (contentDocument) {
                     contentDocument.write(containerHTMLDocument.documentElement.innerHTML);
                     contentDocument.close();
@@ -105,11 +109,15 @@ export function mountInternalSource(internalSource, parentDOMNode) {
     return domNode;
 }
 
-export function mount(atomicPage, parentDOMNode) {
+export function unmount(parentDOMNode) {
     parentDOMNode.innerHTML = "";
-    if (atomicPage) {
-        const { context } = atomicPage;
-        const instance = new atomicPage(context);
+}
+
+export function mount(page, parentDOMNode) {
+    unmount(parentDOMNode);
+    if (page) {
+        const AtomicPage = page;
+        const instance = new AtomicPage();
         const template = instance.template();
         if (template) {
             switch(template.type) {

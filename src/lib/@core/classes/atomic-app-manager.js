@@ -1,8 +1,8 @@
 import { AtomicAppRouter } from "./atomic-app-router";
 
 export class AtomicAppManager {
-    constructor(store, routes, parentDOMNode) {
-        this._store = store;
+    constructor(routes, parentDOMNode) {
+        this._store = {};
         this._appRouter = new AtomicAppRouter(routes, parentDOMNode);
 
         this.useMessageInterceptor();
@@ -28,6 +28,6 @@ export class AtomicAppManager {
     }
 
     useWindowGlobalVariables() {
-        window.AtomicAppStore = this._store;
+        window.AtomicAppFreshStore = this._store;
     }
 }
