@@ -40,7 +40,7 @@ export function mountExternalSource(externalSource, parentDOMNode) {
                 containerBase.href = sourceUrl;
                 containerHTMLDocument.head.insertAdjacentElement('afterbegin', containerBase);
                 if (contentWindow) {
-                    Object.defineProperty(contentWindow, 'AtomicAppStore', { value: window.AtomicAppStore });
+                    Object.defineProperty(contentWindow, 'AtomicAppFreshStore', { value: window.AtomicAppFreshStore });
                 }
                 if (contentDocument) {
                     contentDocument.write(containerHTMLDocument.documentElement.innerHTML);
