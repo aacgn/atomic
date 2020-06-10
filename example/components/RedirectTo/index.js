@@ -1,4 +1,4 @@
-import { createOrganism } from "../../../src/lib/index";
+import { createOrganism } from "../../../src/index";
 
 import "./index.css";
 

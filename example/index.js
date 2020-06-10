@@ -1,4 +1,4 @@
-import { boostrap } from "../src/lib/index";
+import { boostrap } from "../src/index";
 
 import Routes from "./router";
 

@@ -1,20 +1,23 @@
-import { AtomicPage, createTemplate } from "../../../src/lib/index";
+import { createTemplate, AtomicPage } from "../../../src/index";
 
 import "./index.css";
 
 import DynamicMessage from "../../components/DynamicMessage/index";
 import RedirectTo from "../../components/RedirectTo/index";
 
-class HomePage extends AtomicPage {
+@AtomicPage({})
+class HomePage {
+
     constructor() {
-        super();
+        // Overide defaul template of Atomic Page
+        this.template = this.render();
     }
 
-    template() {
-        return createTemplate({}, 'div', [
-                DynamicMessage('Home Page!'),
-                RedirectTo('WelcomePage', '/')
-            ]);
+    render() {
+        return createTemplate({}, 'div', [    
+            DynamicMessage('Home Page!'),
+            RedirectTo('WelcomePage', '/')
+        ]);
     }
 }
 

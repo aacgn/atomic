@@ -118,7 +118,7 @@ export function mount(page, parentDOMNode) {
     if (page) {
         const AtomicPage = page;
         const instance = new AtomicPage();
-        const template = instance.template();
+        const template = instance.template;
         if (template) {
             switch(template.type) {
                 case vDOMType.TEMPLATE:
