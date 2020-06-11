@@ -1,7 +1,7 @@
 import { vDOMType } from "../enums/v-dom-type.enum";
 
 export function mountExternalSource(externalSource, parentDOMNode) {
-    const { className, style, sourceUrl } = externalSource;
+    const { id, className, style, sourceUrl } = externalSource;
 
     const domNode = document.createElement('iframe');
 
@@ -12,6 +12,10 @@ export function mountExternalSource(externalSource, parentDOMNode) {
     domNode.frameBorder = '0';
     
     externalSource.dom = domNode;
+
+    if (id !== undefined) {
+        domNode.id = id;
+    }
     
     if (className !== undefined) {
         domNode.className = className;
@@ -57,7 +61,7 @@ export function mountExternalSource(externalSource, parentDOMNode) {
 
 export function mountInternalSource(internalSource, parentDOMNode) {
 
-    const { type, tag, props, className, style, onClick } = internalSource;
+    const { type, tag, props, id, className, style, onClick } = internalSource;
 
     const domNode = document.createElement(tag);
 
@@ -90,6 +94,10 @@ export function mountInternalSource(internalSource, parentDOMNode) {
 
     if (props.textContent) {
         domNode.textContent = props.textContent;
+    }
+
+    if (id !== undefined) {
+        domNode.id = id;
     }
     
     if (className !== undefined) {

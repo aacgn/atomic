@@ -1,24 +1,26 @@
 import { vDOMType } from "../enums/v-dom-type.enum";
 
 export function createExternalSource(attr) {
-    const { className, style, sourceUrl } = attr;
+    const { id, className, style, sourceUrl } = attr;
 
     return {
         type: vDOMType.EXTERNAL_SOURCE,
-        style: style,
+        id: id,
         className: className,
+        style: style,
         sourceUrl: sourceUrl,
         dom: null
     }
 }
 
 function createInternalSource(attr, tag, children = null, textContent = null) {
-    const {className, style, onClick} = attr;
+    const { id, className, style, onClick} = attr;
 
     return {
         tag: tag,
-        style: style,
+        id: id,
         className: className,
+        style: style,
         onClick: onClick,
         props: {
             textContent: textContent,

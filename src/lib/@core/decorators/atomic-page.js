@@ -5,5 +5,17 @@ export function AtomicPage(config) {
     return function (target) {
         target.prototype.template = template ? template : createTemplate({}, 'div', [], 'This is a default page component!');
         target.prototype.context = context ? context : {};
+
+        target.prototype.getAtomicAppFreshStoreItem = (item) => {
+            const freshStore = window.AtomicAppFreshStore;
+            if (freshStore) {
+                const freshStoreItem = freshStore[item];
+                if (freshStoreItem) {
+                    return freshStoreItem;
+                }
+            }
+            return null;
+        };
+
     }
 };

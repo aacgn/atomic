@@ -1,9 +1,9 @@
-import { createOrganism } from "../../../src/index";
+import { createOrganism, navigateTo } from "../../../src/index";
 
 import "./index.css";
 
 function onClickSpan(path) {
-    window.location.hash = path;
+    navigateTo(path);
 }
 
 const RedirectTo = (msg, path) => createOrganism(

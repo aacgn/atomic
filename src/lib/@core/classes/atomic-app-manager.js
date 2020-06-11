@@ -15,7 +15,7 @@ export class AtomicAppManager {
             if (data && data.hasAtomicSignature) {
                 switch(data.event) {
                     case "navigate":
-                        this._appRouter.navigateTo(data.data );
+                        this._appRouter.navigateTo(data.data);
                         break;
                     case "store":
                         this._store[data.name] = data.data;
