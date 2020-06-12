@@ -21,6 +21,10 @@ export class AtomicAppManager {
                         this._store[data.name] = data.data;
                         break;
                     default:
+                        const customEvent = new CustomEvent(event.event, {
+                            data: event.data
+                        });
+                        window.dispatchEvent(customEvent);
                         break;
                 }
             }
