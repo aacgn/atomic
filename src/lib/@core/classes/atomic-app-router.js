@@ -1,9 +1,11 @@
-import { mount, unmount } from "../functions/mount";
+import { unmount, mount } from "../functions/mount";
 
 export class AtomicAppRouter {
     constructor(routes, parentDOMNode) {
         this._routes = routes;
         this._parentDOMNode = parentDOMNode;
+
+        this._previousPageRendered = null;
 
         this.useWindowLoadInterceptor();
         this.useWindowHashChangeInterceptor();
@@ -31,14 +33,14 @@ export class AtomicAppRouter {
     }
 
     matchRoute() {
+        if (this._previousPageRendered) {
+            unmount(this._previousPageRendered, this._parentDOMNode, true);
+        }
         const matchRoute = this._routes.find(r => r.path === this.currentPath());
         if (matchRoute) {
             const page = matchRoute.page;
-            if (page && this._parentDOMNode)
-                mount(page, this._parentDOMNode);
-        }
-        else {
-            unmount(this._parentDOMNode);
+            mount(page, this._parentDOMNode);
+            this._previousPageRendered = page;
         }
     }
 }

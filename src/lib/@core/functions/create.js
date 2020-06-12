@@ -61,3 +61,29 @@ export function createTemplate(attr, tag, children = null, textContent = null) {
         type: vDOMType.TEMPLATE
     }
 }
+
+export function createPage(config) {
+    const { name, context, mount, onMount, onUnmount } = config;
+
+    if (name === undefined || context === undefined) {
+        throw `name and context are mandatory object fields of the ${vDOMType.PAGE}`;
+    }
+    else if (typeof(name) !== "string") {
+        throw `name field should be a string type`
+    }
+    else if ((typeof(context) !== "object")) {
+        throw `context field should be a object type`
+    }
+
+    return {
+        type: vDOMType.PAGE,
+        props: {
+            name: name,
+            context: context,
+            mount: mount,
+            onMount: onMount,
+            onUnmount: onUnmount
+        },
+        dom: null
+    }
+}

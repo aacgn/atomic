@@ -1,26 +1,29 @@
-import { createTemplate, AtomicPage } from "../../../src/index";
+import { createTemplate, createPage } from "../../../src/index";
 
 import "./index.css";
 
 import DynamicMessage from "../../components/DynamicMessage/index";
 import RedirectTo from "../../components/RedirectTo/index";
 
-@AtomicPage({
-    'context': {}
-})
-class WelcomePage {
-
-    constructor() {
-        // Overide defaul template of Atomic Page
-        this.template = this.render();
+const WelcomePage = () => createPage(
+    {
+        name: "welcome",
+        context: {
+            counter: 0
+        },
+        mount: function(){
+            return createTemplate({}, 'div', [    
+                DynamicMessage(`Welcome Page!`),
+                RedirectTo('Counter Page', '/counter')
+            ])
+        },
+        onMount: function(ref) {
+            console.log('hello!');
+        },
+        onUnmount: function(ref) {
+            console.log('bye!');
+        }
     }
-
-    render() {
-        return createTemplate({}, 'div', [    
-            DynamicMessage('Welcome Page!'),
-            RedirectTo('Home Page', '/home')
-        ]);
-    }
-}
+);
 
 export default WelcomePage;

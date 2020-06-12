@@ -1,8 +1,9 @@
 import { AtomicAppRouter } from "./atomic-app-router";
+import { Storage } from "../enums/app-storage.enum";
 
 export class AtomicAppManager {
     constructor(routes, parentDOMNode) {
-        this._store = {};
+        this._storageData = {};
         this._appRouter = new AtomicAppRouter(routes, parentDOMNode);
 
         this.useMessageInterceptor();
@@ -18,7 +19,7 @@ export class AtomicAppManager {
                         this._appRouter.navigateTo(data.data);
                         break;
                     case "store":
-                        this._store[data.name] = data.data;
+                        this._storageData[data.name] = data.data;
                         break;
                     default:
                         const customEvent = new CustomEvent(event.event, {
@@ -32,6 +33,6 @@ export class AtomicAppManager {
     }
 
     useWindowGlobalVariables() {
-        window.AtomicAppFreshStore = this._store;
+        window[Storage.STORAGE_NAME] = this._storageData;
     }
 }

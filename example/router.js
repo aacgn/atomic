@@ -1,14 +1,14 @@
 import WelcomePage from "./pages/WelcomePage/index";
-import HomePage from "./pages/HomePage/index";
+import CounterPage from "./pages/CounterPage";
 
 const Routes = [
     {
         path: '/',
-        page: WelcomePage
+        page: WelcomePage()
     },
     {
-        path: '/home',
-        page: HomePage
+        path: '/counter',
+        page: CounterPage()
     }
 ];
 
