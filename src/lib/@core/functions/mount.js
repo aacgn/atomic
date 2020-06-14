@@ -1,6 +1,5 @@
 import { vDOMType } from "../enums/v-dom-type.enum";
 import { Storage } from "../enums/app-storage.enum";
-import { $args } from "../../util/functions.util";
 
 export function mountExternalSource(externalSource, parentDOMNode) {
     const { id, className, style, sourceUrl } = externalSource;
@@ -46,7 +45,7 @@ export function mountExternalSource(externalSource, parentDOMNode) {
                 containerBase.href = sourceUrl;
                 containerHTMLDocument.head.insertAdjacentElement('afterbegin', containerBase);
                 if (contentWindow) {
-                    Object.defineProperty(contentWindow, 'AtomicAppFreshStore', { value: window.AtomicAppFreshStore });
+                    Object.defineProperty(contentWindow, Storage.STORAGE_NAME, { value: window[Storage.STORAGE_NAME] });
                 }
                 if (contentDocument) {
                     contentDocument.write(containerHTMLDocument.documentElement.innerHTML);

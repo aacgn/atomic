@@ -6,7 +6,9 @@ module.exports = {
   entry: './example/index.js',
   mode: 'development',
   devServer: {
-    open: true
+    open: true,
+    port: 8888,
+    historyApiFallback: true
   },
   module: {
     rules: [
@@ -25,7 +27,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
   },
   plugins: [
     new CleanWebpackPlugin(),

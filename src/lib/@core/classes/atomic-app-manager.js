@@ -2,9 +2,9 @@ import { AtomicAppRouter } from "./atomic-app-router";
 import { Storage } from "../enums/app-storage.enum";
 
 export class AtomicAppManager {
-    constructor(routes, parentDOMNode) {
-        this._storageData = {};
-        this._appRouter = new AtomicAppRouter(routes, parentDOMNode);
+    constructor(storageData, appRouter) {
+        this._storageData = storageData;
+        this._appRouter = appRouter;
 
         this.useMessageInterceptor();
         this.useWindowGlobalVariables();
