@@ -8,9 +8,7 @@ import RedirectTo from "../../components/RedirectTo/index";
 const WelcomePage = () => createPage(
     {
         name: "welcome",
-        context: {
-            counter: 0
-        },
+        context: {},
         mount: function(){
             return createTemplate({}, 'div', [    
                 DynamicMessage(`Welcome Page!`),
