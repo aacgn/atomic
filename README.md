@@ -1,4 +1,4 @@
-# ![Atomic Logo](assets\atomic_logo.png)
+# ![Atomic Logo](assets/atomic_logo.png)
 
 Atomic is a JavaScript library for building horizontal micro frontends interfaces.
 
