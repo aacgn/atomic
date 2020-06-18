@@ -23,7 +23,7 @@ export class AtomicAppManager {
                         break;
                     default:
                         const customEvent = new CustomEvent(data.event, {
-                            data: data.data
+                            detail: data.data
                         });
                         window.dispatchEvent(customEvent);
                         break;

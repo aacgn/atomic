@@ -63,7 +63,7 @@ export function createTemplate(attr, tag, children = null, textContent = null) {
 }
 
 export function createPage(config) {
-    const { name, context, mount, onMount, onUnmount } = config;
+    const { name, context, methods, mount, onMount, onUnmount } = config;
 
     if (name === undefined || context === undefined) {
         throw `name and context are mandatory object fields of the ${vDOMType.PAGE}`;
@@ -80,6 +80,7 @@ export function createPage(config) {
         props: {
             name: name,
             context: context,
+            methods: methods,
             mount: mount,
             onMount: onMount,
             onUnmount: onUnmount

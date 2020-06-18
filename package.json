@@ -1,11 +1,23 @@
 {
   "name": "atomic",
-  "version": "1.0.5-alpha",
-  "description": "",
+  "version": "1.0.12-alpha",
+  "description": "A JavaScript library for building horizontal micro frontends interfaces",
   "main": "./src/index.js",
+  "bin": "./src/index.js",
   "scripts": {
     "start": "webpack-dev-server"
   },
+  "keywords": [
+    "javascript",
+    "micro frontends",
+    "micro-frontends",
+    "microfrontends",
+    "shell",
+    "vue",
+    "react",
+    "angular",
+    "atomic"
+  ],
   "author": "Antonio Neto (@aacgn)",
   "license": "MIT",
   "devDependencies": {
@@ -24,5 +36,13 @@
   "dependencies": {
     "@babel/runtime": "^7.10.2",
     "core-js": "^3.6.5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aacgn/atomic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aacgn/atomic/issues"
+  },
+  "homepage": "https://github.com/aacgn/atomic#readme"
 }
