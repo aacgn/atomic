@@ -1,5 +1,6 @@
 import { vDOMType } from "../enums/v-dom-type.enum";
 import { Storage } from "../enums/app-storage.enum";
+import { DOMTagType } from "../enums/dom-tag-type.enum";
 
 export function mountExternalSource(externalSource, parentDOMNode) {
     const { id, className, style, sourceUrl } = externalSource;
@@ -68,6 +69,18 @@ export function mountInternalSource(internalSource, parentDOMNode) {
 
     internalSource.dom = domNode;
 
+    if(tag === DOMTagType.IMG && props.src) {
+        domNode.src = props.src;
+    }
+
+    if (tag === DOMTagType.A && props.href) {
+        domNode.href = props.href
+    }
+
+    if (props.textContent) {
+        domNode.textContent = props.textContent;
+    }
+
     if (props.children) {
         props.children.forEach(child => {
             switch(child.type) {
@@ -88,18 +101,16 @@ export function mountInternalSource(internalSource, parentDOMNode) {
                     if (type !== vDOMType.ORGANISM)
                         throw  `${vDOMType.MOLECULE} must be a child of ${vDOMType.ORGANISM}.`;
                     mountInternalSource(child, domNode);
+                    break;
                 case vDOMType.ATOM:
                     if (type !== vDOMType.MOLECULE)
                         throw  `${vDOMType.ATOM} must be a child of ${vDOMType.MOLECULE}.`;
                     mountInternalSource(child, domNode);
+                    break;
                 default:
                     break;
             }
         });
-    }
-
-    if (props.textContent) {
-        domNode.textContent = props.textContent;
     }
 
     if (id !== undefined) {

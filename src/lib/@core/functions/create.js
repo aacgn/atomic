@@ -1,7 +1,7 @@
 import { vDOMType } from "../enums/v-dom-type.enum";
 
-export function createExternalSource(attr) {
-    const { id, className, style, sourceUrl } = attr;
+export function createExternalSource(config) {
+    const { id, className, style, sourceUrl } = config;
 
     return {
         type: vDOMType.EXTERNAL_SOURCE,
@@ -13,8 +13,8 @@ export function createExternalSource(attr) {
     }
 }
 
-function createInternalSource(attr, tag, children = null, textContent = null) {
-    const { id, className, style, onClick} = attr;
+function createInternalSource(config, tag, children = null) {
+    const { id, className, style, src, alt, href, textContent, onClick} = config;
 
     return {
         tag: tag,
@@ -23,6 +23,9 @@ function createInternalSource(attr, tag, children = null, textContent = null) {
         style: style,
         onClick: onClick,
         props: {
+            src: src,
+            alt: alt,
+            href: href,
             textContent: textContent,
             children: children
         },
@@ -30,32 +33,32 @@ function createInternalSource(attr, tag, children = null, textContent = null) {
     }
 }
 
-export function createAtom(attr, tag, textContent = null) {
-    const internalSource = createInternalSource(attr, tag, null, textContent);
+export function createAtom(config, tag) {
+    const internalSource = createInternalSource(config, tag, null);
 
     return {...internalSource,
         type: vDOMType.ATOM
     }
 }
 
-export function createMolecule(attr, tag, children = null, textContent = null) {
-    const internalSource = createInternalSource(attr, tag, children, textContent);
+export function createMolecule(config, tag, children = null) {
+    const internalSource = createInternalSource(config, tag, children);
 
     return {...internalSource,
         type: vDOMType.MOLECULE
     }
 }
 
-export function createOrganism(attr, tag, children = null, textContent = null) {
-    const internalSource = createInternalSource(attr, tag, children, textContent);
+export function createOrganism(config, tag, children = null) {
+    const internalSource = createInternalSource(config, tag, children);
 
     return {...internalSource,
         type: vDOMType.ORGANISM
     }
 }
 
-export function createTemplate(attr, tag, children = null, textContent = null) {
-    const internalSource = createInternalSource(attr, tag, children, textContent);
+export function createTemplate(config, tag, children = null) {
+    const internalSource = createInternalSource(config, tag, children);
 
     return {...internalSource,
         type: vDOMType.TEMPLATE

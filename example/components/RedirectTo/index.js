@@ -8,9 +8,11 @@ function onClickSpan(path) {
 
 const RedirectTo = (msg, path) => createOrganism(
     { 
-        'onClick': () => onClickSpan(path), 
-        'style': { 'color': 'blue', 'cursor': 'pointer', 'text-decoration': 'underline' }
+        onClick: () => onClickSpan(path), 
+        style: { 'color': 'blue', 'cursor': 'pointer', 'text-decoration': 'underline' },
+        textContent: msg
     },
-    'span', [], msg);
+    'span'
+);
 
 export default RedirectTo;
