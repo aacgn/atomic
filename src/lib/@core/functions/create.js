@@ -14,7 +14,7 @@ export function createExternalSource(config) {
 }
 
 function createInternalSource(config, tag, children = null) {
-    const { id, className, style, src, alt, href, textContent, onClick} = config;
+    const { id, className, style, src, alt, href, innerHTML, textContent, onClick} = config;
 
     return {
         tag: tag,
@@ -26,6 +26,7 @@ function createInternalSource(config, tag, children = null) {
             src: src,
             alt: alt,
             href: href,
+            innerHTML: innerHTML,
             textContent: textContent,
             children: children
         },

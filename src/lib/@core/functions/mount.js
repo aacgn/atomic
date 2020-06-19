@@ -77,6 +77,10 @@ export function mountInternalSource(internalSource, parentDOMNode) {
         domNode.href = props.href
     }
 
+    if (props.innerHTML) {
+        domNode.innerHTML = props.innerHTML;
+    }
+
     if (props.textContent) {
         domNode.textContent = props.textContent;
     }
