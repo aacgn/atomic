@@ -1,6 +1,6 @@
 {
   "name": "@aacgn/atomic",
-  "version": "1.0.12-alpha",
+  "version": "1.0.0-alpha",
   "description": "A JavaScript library for building horizontal micro frontends interfaces",
   "main": "./src/index.js",
   "bin": "./src/index.js",
