@@ -7,13 +7,13 @@ Atomic is a JavaScript library for building horizontal micro frontends interface
 Use the package manager [npm](https://www.npmjs.com/) to install atomic.
 
 ```bash
-npm install atomic
+npm install @aacgn/atomic
 ```
 
 ## Usage
 
 ```javascript
-import { bootstrap, createPage, createTemplate } from "atomic";
+import { bootstrap, createPage, createTemplate } from "@aacgn/atomic";
 
 const IndexPage = () => createPage(
     {
