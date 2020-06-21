@@ -91,6 +91,11 @@ export function mountInternalSource(internalSource, parentDOMNode) {
                 case vDOMType.EXTERNAL_SOURCE:
                     mountExternalSource(child, domNode);
                     break;
+                case vDOMType.INTERNAL_SOURCE:
+                    if (type !== vDOMType.INTERNAL_SOURCE && type !== vDOMType.PAGE)
+                        throw `${vDOM.INTERNAL_SOURCE} must be a child of ${vDOMType.PAGE} or another ${vDOMType.INTERNAL_SOURCE}.`;
+                    mountInternalSource(child, domNode);
+                    break;
                 case vDOMType.TEMPLATE:
                     if (type !== vDOMType.PAGE)
                         throw `${vDOMType.TEMPLATE} must be a child of ${vDOMType.PAGE}.`;
@@ -138,27 +143,48 @@ export function mountInternalSource(internalSource, parentDOMNode) {
     return domNode;
 }
 
-export function unmount(ref, parentDOMNode, calledFromRouter = false) {
+export function unmountContent(content, parentDOMNode) {
+    if (content && parentDOMNode) {
+        parentDOMNode.innerHTML = "";
+        content.dom = null;
+    }
+}
+
+export function unmountPage(ref, parentDOMNode) {
     if (ref && parentDOMNode) {
 
         const { type, props } = ref;
 
         if (type !== vDOMType.PAGE)
-            throw `Only ${vDOMType.PAGE} components are allowed to start mounting the application.`;
+            throw `Only ${vDOMType.PAGE} components are allowed to mount the application.`;
 
         parentDOMNode.innerHTML = "";
 
-        if (calledFromRouter) {
-            if (props.onUnmount !== undefined) {
-                props.onUnmount(ref);
-            }
+        if (props.onUnmount !== undefined) {
+            props.onUnmount(ref);
+        }
 
-            ref.dom = null;
+        ref.dom = null;
+    }
+}
+
+export function mountContent(content, parentDOMNode) {
+    if (content && parentDOMNode) {
+        switch(content.type) {
+            case vDOMType.INTERNAL_SOURCE:
+            case vDOMType.TEMPLATE:
+                mountInternalSource(content, parentDOMNode);
+                break;
+            case vDOMType.EXTERNAL_SOURCE:
+                mountExternalSource(content, parentDOMNode);
+                break;
+            default:
+                throw `Only ${vDOMType.TEMPLATE}, ${vDOMType.INTERNAL_SOURCE} or ${vDOMType.EXTERNAL_SOURCE} components are allowed to be a child of ${vDOMType.PAGE} component.`;
         }
     }
 }
 
-export function mount(ref, parentDOMNode) {
+export function mountPage(ref, parentDOMNode) {
     if (ref && parentDOMNode) {
 
         ref.dom = parentDOMNode;
@@ -171,18 +197,7 @@ export function mount(ref, parentDOMNode) {
         window[Storage.STORAGE_NAME][props.name] = props.context;
 
         if (props.mount !== undefined) {
-            const child = props.mount();
-
-            switch(child.type) {
-                case vDOMType.TEMPLATE:
-                    mountInternalSource(child, parentDOMNode);
-                    break;
-                case vDOMType.EXTERNAL_SOURCE:
-                    mountExternalSource(child, parentDOMNode);
-                    break;
-                default:
-                    throw `Only ${vDOMType.TEMPLATE} or ${vDOMType.EXTERNAL_SOURCE} components are allowed to be a child of ${vDOMType.PAGE} component.`;
-            }
+            mountContent(props.mount(), parentDOMNode);
         }
 
         if (props.onMount !== undefined) {

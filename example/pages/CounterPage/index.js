@@ -20,7 +20,7 @@ const CounterPage = () => createPage(
             ])
         },
         onMount: function(ref) {
-            setTimeout(() => {
+            setInterval(() => {
                 updateContext(ref, 'counter', parseInt(this.context.counter) + 100);
             }, 1000);
         }

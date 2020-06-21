@@ -1,4 +1,4 @@
-import { unmount, mount } from "./mount";
+import {unmountContent, mountContent } from "./mount";
 
 export function updateContext(ref, contextAttr, contextVal) {
     // Deep copy
@@ -7,7 +7,7 @@ export function updateContext(ref, contextAttr, contextVal) {
     ref.props.context[contextAttr] = [contextVal];
 
     if (initialContext !== ref.props.context) {
-        unmount(ref, ref.dom);
-        mount(ref, ref.dom);
+        unmountContent(ref.props.mount(), ref.dom);
+        mountContent(ref.props.mount(), ref.dom);
     }
 }

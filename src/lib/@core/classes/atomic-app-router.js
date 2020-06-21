@@ -1,4 +1,4 @@
-import { unmount, mount } from "../functions/mount";
+import { unmountPage, mountPage } from "../functions/mount";
 import { AppRouterType } from "../enums/app-router-type.enum";
 
 export class AtomicAppRouter {
@@ -10,7 +10,6 @@ export class AtomicAppRouter {
         
         this.currentPath = () => { };
         this.navigateTo = (path) => { };
-
 
         switch(mode) {
             case AppRouterType.HISTORY:
@@ -80,12 +79,12 @@ export class AtomicAppRouter {
 
     matchRoute() {
         if (this._previousPageRendered) {
-            unmount(this._previousPageRendered, this._parentDOMNode, true);
+            unmountPage(this._previousPageRendered, this._parentDOMNode);
         }
         const matchRoute = this._routes.find(r => r.path === this.currentPath());
         if (matchRoute) {
             const page = matchRoute.page;
-            mount(page, this._parentDOMNode);
+            mountPage(page, this._parentDOMNode);
             this._previousPageRendered = page;
         }
     }

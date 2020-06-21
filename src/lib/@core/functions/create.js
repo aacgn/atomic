@@ -13,10 +13,11 @@ export function createExternalSource(config) {
     }
 }
 
-function createInternalSource(config, tag, children = null) {
+export function createInternalSource(config, tag, children = null) {
     const { id, className, style, src, alt, href, innerHTML, textContent, onClick} = config;
 
     return {
+        type: vDOMType.INTERNAL_SOURCE,
         tag: tag,
         id: id,
         className: className,
