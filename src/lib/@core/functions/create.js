@@ -1,95 +1,119 @@
 import { vDOMType } from "../enums/v-dom-type.enum";
 
-export function createExternalSource(config) {
-    const { id, className, style, sourceUrl } = config;
+function createVDOMElement(tag, attr, props) {
+    const { 
+        id, 
+        className, 
+        style, 
+        src, 
+        href, 
+        alt
+    } = attr;
+
+    const {
+        innerHTML, 
+        innerText, 
+        textContent, 
+        eventListener,
+        eventHandler,
+        children
+    } = props;
 
     return {
-        type: vDOMType.EXTERNAL_SOURCE,
-        id: id,
-        className: className,
-        style: style,
-        sourceUrl: sourceUrl,
-        dom: null
-    }
-}
-
-export function createInternalSource(config, tag, children = null) {
-    const { id, className, style, src, alt, href, innerHTML, textContent, onClick} = config;
-
-    return {
-        type: vDOMType.INTERNAL_SOURCE,
         tag: tag,
-        id: id,
-        className: className,
-        style: style,
-        onClick: onClick,
-        props: {
+        attr: {
+            id: id,
+            className: className,
+            style: style,
             src: src,
-            alt: alt,
             href: href,
+            alt: alt
+        },
+        props: {
             innerHTML: innerHTML,
+            innerText: innerText,
             textContent: textContent,
+            eventListener: eventListener,
+            eventHandler: eventHandler,
             children: children
         },
         dom: null
     }
 }
 
-export function createAtom(config, tag) {
-    const internalSource = createInternalSource(config, tag, null);
+export function createAtomElement(tag, attr, props) {
 
-    return {...internalSource,
-        type: vDOMType.ATOM
+    const { children, ...filteredProps } = props;
+
+    const vDOMElement = createVDOMElement(tag, attr, filteredProps);
+
+    return {...vDOMElement,
+        type: vDOMType.ATOM_ELEMENT
     }
 }
 
-export function createMolecule(config, tag, children = null) {
-    const internalSource = createInternalSource(config, tag, children);
+export function createMoleculeElement(tag, attr, props) {
+    const vDOMElement = createVDOMElement(tag, attr, props);
 
-    return {...internalSource,
-        type: vDOMType.MOLECULE
+    return {...vDOMElement,
+        type: vDOMType.MOLECULE_ELEMENT
     }
 }
 
-export function createOrganism(config, tag, children = null) {
-    const internalSource = createInternalSource(config, tag, children);
+export function createOrganismElement(tag, attr, props) {
+    const vDOMElement = createVDOMElement(tag, attr, props);
 
-    return {...internalSource,
-        type: vDOMType.ORGANISM
+    return {...vDOMElement,
+        type: vDOMType.ORGANISM_ELEMENT
     }
 }
 
-export function createTemplate(config, tag, children = null) {
-    const internalSource = createInternalSource(config, tag, children);
+export function createTemplateElement(tag, attr, props) {
+    const vDOMElement = createVDOMElement(tag, attr, props);
 
-    return {...internalSource,
-        type: vDOMType.TEMPLATE
+    return {...vDOMElement,
+        type: vDOMType.TEMPLATE_ELEMENT
     }
 }
 
-export function createPage(config) {
-    const { name, context, methods, mount, onMount, onUnmount } = config;
+export function createMicrofrontWrapperElement(attr, props) {
 
-    if (name === undefined || context === undefined) {
-        throw `name and context are mandatory object fields of the ${vDOMType.PAGE}`;
+    const { src, href, ...filteredAttr } = attr;
+
+    const { innerHTML, innerText, textContent, children, ...filteredProps } = props;
+
+    const vDOMElement = createVDOMElement(null, filteredAttr, filteredProps);
+
+    return {
+        ...vDOMElement,
+        type: vDOMType.MICROFRONT_WRAPPER_ELEMENT,
+        props: {
+            ...vDOMElement.props,
+            baseUrl: props.baseUrl
+        }
     }
-    else if (typeof(name) !== "string") {
-        throw `name field should be a string type`
+}
+
+export function createElement(tag, attr, props) {
+    const vDOMElement = createVDOMElement(tag, attr, props);
+
+    return {...vDOMElement,
+        type: vDOMType.ELEMENT
     }
-    else if ((typeof(context) !== "object")) {
-        throw `context field should be a object type`
-    }
+}
+
+export function createPage(props) {
+    const { mount, context, methods, onMount, onUnmount } = props;
 
     return {
         type: vDOMType.PAGE,
         props: {
-            name: name,
+            mount: mount,
             context: context,
             methods: methods,
-            mount: mount,
             onMount: onMount,
             onUnmount: onUnmount
         },
-        dom: null
+        parentDOMNode: null
     }
 }

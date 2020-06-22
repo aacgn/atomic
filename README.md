@@ -13,18 +13,18 @@ npm install @aacgn/atomic
 ## Usage
 
 ```javascript
-import { bootstrap, createPage, createTemplate } from "@aacgn/atomic";
+import { Atomic, AtomicRouter, createPage, createTemplateElement } from "@aacgn/atomic";
 
 const IndexPage = () => createPage(
     {
-        name: "index",
         context: {},
         mount: function() {
-            return createTemplate(
+            return createTemplateElement(
+                "span",
                 {},
-                "span", 
-                [],
-                "This is our index page!"
+                {
+                    textContent: "This is our index page!"
+                } 
             );
         },
         onMount: function(ref) {
@@ -36,14 +36,21 @@ const IndexPage = () => createPage(
     }
 );
 
-const Routes = [
+const routes = [
     {
         path: "/",
         page: IndexPage()
     }
 ]
 
-bootstrap(Routes, document.getElementById('root'));
+const Router = new AtomicRouter(
+    {
+        routes: routes,
+        mode: "history"
+    }
+);
+
+new Atomic(Router, document.getElementById('root'));
 ```
 
 ## Contributing

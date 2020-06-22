@@ -1,7 +1,7 @@
-import { createOrganism } from "../../../src/index";
+import { createOrganismElement } from "../../../src/index";
 
 import "./index.css";
 
-const DynamicMessage = (msg) => createOrganism({ textContent: msg }, 'span');
+const DynamicMessage = (msg) => createOrganismElement('span', {}, { textContent: msg });
 
 export default DynamicMessage;

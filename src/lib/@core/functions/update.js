@@ -1,4 +1,4 @@
-import {unmountContent, mountContent } from "./mount";
+import {unmountVDOMElementTree, mountVDOMElements } from "./mount";
 
 export function updateContext(ref, contextAttr, contextVal) {
     // Deep copy
@@ -7,7 +7,7 @@ export function updateContext(ref, contextAttr, contextVal) {
     ref.props.context[contextAttr] = contextVal;
 
     if (initialContext !== ref.props.context) {
-        unmountContent(ref.props.mount(), ref.dom);
-        mountContent(ref.props.mount(), ref.dom);
+        unmountVDOMElementTree(ref.parentDOMNode);
+        mountVDOMElements(ref.props.mount(), ref.parentDOMNode);
     }
 }

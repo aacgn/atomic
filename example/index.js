@@ -1,5 +1,8 @@
-import { bootstrap } from "../src/index";
+import { Atomic } from "../src/index";
 
-import Routes from "./router";
+import Router from "./router";
 
-bootstrap(Routes, document.getElementById('root'));
+new Atomic(
+    Router,
+    document.getElementById("root")
+);

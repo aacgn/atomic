@@ -1,38 +1,35 @@
 import { vDOMType } from "../enums/v-dom-type.enum";
-import { Storage } from "../enums/app-storage.enum";
-import { DOMTagType } from "../enums/dom-tag-type.enum";
 
-export function mountExternalSource(externalSource, parentDOMNode) {
-    const { id, className, style, sourceUrl } = externalSource;
+function mountMicrofrontWrapper(microfrontWrapper, parentDOMNode) {
+    const { attr, props } = microfrontWrapper;
 
-    const domNode = document.createElement('iframe');
+    const domNode = document.createElement("iframe");
 
-    domNode.sandbox.add('allow-same-origin');
-    domNode.sandbox.add('allow-scripts');
-    domNode.sandbox.add('allow-popups');
-    domNode.sandbox.add('allow-forms');
-    domNode.frameBorder = '0';
+    domNode.sandbox.add("allow-same-origin");
+    domNode.sandbox.add("allow-scripts");
+    domNode.sandbox.add("allow-popups");
+    domNode.sandbox.add("allow-forms");
+    domNode.frameBorder = "0";
     
-    externalSource.dom = domNode;
+    microfrontWrapper.dom = domNode;
 
-    if (id !== undefined) {
-        domNode.id = id;
+    if (attr.id !== undefined) {
+        domNode.id = attr.id;
     }
     
-    if (className !== undefined) {
-        domNode.className = className;
+    if (attr.className !== undefined) {
+        domNode.className = attr.className;
     }
 
-    if (style !== undefined) {
-        Object.keys(style).forEach((sKey) => domNode.style[sKey] = style[sKey]);
+    if (attr.style !== undefined) {
+        Object.keys(attr.style).forEach((sKey) => domNode.style[sKey] = style[sKey]);
     }
 
-    if (sourceUrl !== undefined) {
-        domNode.addEventListener('load', async () => {
-            const contentWindow = domNode.contentWindow;
+    if (props.url !== undefined) {
+        domNode.addEventListener("load", async () => {
             const contentDocument = domNode.contentDocument;
             const containerHTMLDocument = document.implementation.createHTMLDocument();
-            const containerHTML = await fetch(sourceUrl, { mode: 'cors', referrerPolicy: 'origin-when-cross-origin'})
+            const containerHTML = await fetch(props.url, { mode: "cors", referrerPolicy: "origin-when-cross-origin"})
               .then( (response) => {
                 return response.text();
               })
@@ -42,12 +39,9 @@ export function mountExternalSource(externalSource, parentDOMNode) {
         
             if (containerHTML) {
                 containerHTMLDocument.documentElement.innerHTML = containerHTML;
-                const containerBase = document.createElement('base');
-                containerBase.href = sourceUrl;
-                containerHTMLDocument.head.insertAdjacentElement('afterbegin', containerBase);
-                if (contentWindow) {
-                    Object.defineProperty(contentWindow, Storage.STORAGE_NAME, { value: window[Storage.STORAGE_NAME] });
-                }
+                const containerBase = document.createElement("base");
+                containerBase.href = props.url;
+                containerHTMLDocument.head.insertAdjacentElement("afterbegin", containerBase);
                 if (contentDocument) {
                     contentDocument.write(containerHTMLDocument.documentElement.innerHTML);
                     contentDocument.close();
@@ -61,60 +55,76 @@ export function mountExternalSource(externalSource, parentDOMNode) {
     return domNode;
 }
 
-export function mountInternalSource(internalSource, parentDOMNode) {
+function mountVDOMElement(vDOMElement, parentDOMNode) {
 
-    const { type, tag, props, id, className, style, onClick } = internalSource;
+    const { type, tag, attr, props } = vDOMElement;
 
     const domNode = document.createElement(tag);
 
-    internalSource.dom = domNode;
+    vDOMElement.dom = domNode;
 
-    if(tag === DOMTagType.IMG && props.src) {
-        domNode.src = props.src;
+    if (attr.id !== undefined) {
+        domNode.id = attr.id;
+    }
+    
+    if (attr.className !== undefined) {
+        domNode.className = attr.className;
     }
 
-    if (tag === DOMTagType.A && props.href) {
+    if (attr.style !== undefined) {
+        Object.keys(attr.style).forEach((sKey) => domNode.style[sKey] = attr.style[sKey]);
+    }
+
+    if(attr.src !== undefined) {
+        domNode.src = attr.src;
+    }
+
+    if (attr.href !== undefined) {
         domNode.href = props.href
     }
 
-    if (props.innerHTML) {
+    if (props.innerHTML !== undefined) {
         domNode.innerHTML = props.innerHTML;
     }
 
-    if (props.textContent) {
+    if (props.innerText !== undefined) {
+        domNode.innerText = props.innerText;
+    }
+
+    if (props.textContent !== undefined) {
         domNode.textContent = props.textContent;
     }
 
-    if (props.children) {
+    if (props.children !== undefined) {
         props.children.forEach(child => {
             switch(child.type) {
-                case vDOMType.EXTERNAL_SOURCE:
-                    mountExternalSource(child, domNode);
+                case vDOMType.MICROFRONT_WRAPPER_ELEMENT:
+                    mountMicrofrontWrapper(child, domNode);
                     break;
-                case vDOMType.INTERNAL_SOURCE:
-                    if (type !== vDOMType.INTERNAL_SOURCE && type !== vDOMType.PAGE)
-                        throw `${vDOM.INTERNAL_SOURCE} must be a child of ${vDOMType.PAGE} or another ${vDOMType.INTERNAL_SOURCE}.`;
-                    mountInternalSource(child, domNode);
+                case vDOMType.ELEMENT:
+                    if (type !== vDOMType.ELEMENT && type !== vDOMType.PAGE)
+                        throw `${vDOMType.ELEMENT} must be a child of ${vDOMType.PAGE} or another ${vDOMType.ELEMENT}.`;
+                    mountVDOMElement(child, domNode);
                     break;
-                case vDOMType.TEMPLATE:
+                case vDOMType.TEMPLATE_ELEMENT:
                     if (type !== vDOMType.PAGE)
-                        throw `${vDOMType.TEMPLATE} must be a child of ${vDOMType.PAGE}.`;
-                    mountInternalSource(child, domNode);
+                        throw `${vDOMType.TEMPLATE_ELEMENT} must be a child of ${vDOMType.PAGE}.`;
+                    mountVDOMElement(child, domNode);
                     break;
-                case vDOMType.ORGANISM:
-                    if (type !== vDOMType.TEMPLATE)
-                        throw `${vDOMType.ORGANISM} must be a child of ${vDOMType.TEMPLATE}.`;
-                    mountInternalSource(child, domNode);
+                case vDOMType.ORGANISM_ELEMENT:
+                    if (type !== vDOMType.TEMPLATE_ELEMENT)
+                        throw `${vDOMType.ORGANISM_ELEMENT} must be a child of ${vDOMType.TEMPLATE_ELEMENT}.`;
+                    mountVDOMElement(child, domNode);
                     break;
-                case vDOMType.MOLECULE:
-                    if (type !== vDOMType.ORGANISM)
-                        throw  `${vDOMType.MOLECULE} must be a child of ${vDOMType.ORGANISM}.`;
-                    mountInternalSource(child, domNode);
+                case vDOMType.MOLECULE_ELEMENT:
+                    if (type !== vDOMType.ORGANISM_ELEMENT)
+                        throw  `${vDOMType.MOLECULE_ELEMENT} must be a child of ${vDOMType.ORGANISM_ELEMENT}.`;
+                    mountVDOMElement(child, domNode);
                     break;
-                case vDOMType.ATOM:
-                    if (type !== vDOMType.MOLECULE)
-                        throw  `${vDOMType.ATOM} must be a child of ${vDOMType.MOLECULE}.`;
-                    mountInternalSource(child, domNode);
+                case vDOMType.ATOM_ELEMENT:
+                    if (type !== vDOMType.MOLECULE_ELEMENT)
+                        throw  `${vDOMType.ATOM_ELEMENT} must be a child of ${vDOMType.MOLECULE_ELEMENT}.`;
+                    mountVDOMElement(child, domNode);
                     break;
                 default:
                     break;
@@ -122,20 +132,8 @@ export function mountInternalSource(internalSource, parentDOMNode) {
         });
     }
 
-    if (id !== undefined) {
-        domNode.id = id;
-    }
-    
-    if (className !== undefined) {
-        domNode.className = className;
-    }
-
-    if (style !== undefined) {
-        Object.keys(style).forEach((sKey) => domNode.style[sKey] = style[sKey]);
-    }
-
-    if (onClick !== undefined) {
-        domNode.addEventListener('click', onClick);
+    if (props.eventListener !== undefined && props.eventHandler !== undefined) {
+        domNode.addEventListener(props.eventListener, props.eventHandler);
     }
 
     parentDOMNode.appendChild(domNode);
@@ -143,65 +141,60 @@ export function mountInternalSource(internalSource, parentDOMNode) {
     return domNode;
 }
 
-export function unmountContent(content, parentDOMNode) {
-    if (content && parentDOMNode) {
+export function unmountVDOMElementTree(parentDOMNode) {
+    if (parentDOMNode) {
         parentDOMNode.innerHTML = "";
-        content.dom = null;
     }
 }
 
-export function unmountPage(ref, parentDOMNode) {
-    if (ref && parentDOMNode) {
+export function unmountPage(page) {
+    if (page) {
 
-        const { type, props } = ref;
-
-        if (type !== vDOMType.PAGE)
-            throw `Only ${vDOMType.PAGE} components are allowed to mount the application.`;
-
-        parentDOMNode.innerHTML = "";
+        const { props, parentDOMNode } = page;
 
         if (props.onUnmount !== undefined) {
-            props.onUnmount(ref);
+            props.onUnmount(page);
         }
 
-        ref.dom = null;
+        parentDOMNode.innerHTML = "";
+
+        page.parentDOMNode = null;
     }
 }
 
-export function mountContent(content, parentDOMNode) {
-    if (content && parentDOMNode) {
-        switch(content.type) {
-            case vDOMType.INTERNAL_SOURCE:
-            case vDOMType.TEMPLATE:
-                mountInternalSource(content, parentDOMNode);
+export function mountVDOMElements(vDOMElementsTree, parentDOMNode) {
+    if (vDOMElementsTree && parentDOMNode) {
+        switch(vDOMElementsTree.type) {
+            case vDOMType.ELEMENT:
+            case vDOMType.TEMPLATE_ELEMENT:
+                mountVDOMElement(vDOMElementsTree, parentDOMNode);
                 break;
-            case vDOMType.EXTERNAL_SOURCE:
-                mountExternalSource(content, parentDOMNode);
+            case vDOMType.MICROFRONT_WRAPPER_ELEMENT:
+                mountMicrofrontWrapper(vDOMElementsTree, parentDOMNode);
                 break;
             default:
-                throw `Only ${vDOMType.TEMPLATE}, ${vDOMType.INTERNAL_SOURCE} or ${vDOMType.EXTERNAL_SOURCE} components are allowed to be a child of ${vDOMType.PAGE} component.`;
+                throw `Only ${vDOMType.ELEMENT}, ${vDOMType.MICROFRONT_WRAPPER_ELEMENT} or ${vDOMType.TEMPLATE_ELEMENT} are allowed to be a child of a ${vDOMType.PAGE}.`;
         }
     }
 }
 
-export function mountPage(ref, parentDOMNode) {
-    if (ref && parentDOMNode) {
+export function mountPage(page, parentDOMNode) {
+    if (page && parentDOMNode) {
 
-        ref.dom = parentDOMNode;
-
-        const { type, props } = ref;
+        const { type, props } = page;
 
         if (type !== vDOMType.PAGE)
-            throw `Only ${vDOMType.PAGE} components are allowed to start mounting the application.`;
-
-        window[Storage.STORAGE_NAME][props.name] = props.context;
+            throw `Only a ${vDOMType.PAGE} can be passed through router.`;
 
         if (props.mount !== undefined) {
-            mountContent(props.mount(), parentDOMNode);
+            const vDOMElementsTree = props.mount();
+            mountVDOMElements(vDOMElementsTree, parentDOMNode);
         }
 
         if (props.onMount !== undefined) {
-            props.onMount(ref);
+            props.onMount(page);
         }
+
+        page.parentDOMNode = parentDOMNode;
     }
 }

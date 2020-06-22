@@ -1,4 +1,4 @@
-import { createTemplate, createPage } from "../../../src/index";
+import { createTemplateElement, createPage } from "../../../src/index";
 
 import "./index.css";
 
@@ -7,13 +7,16 @@ import RedirectTo from "../../components/RedirectTo/index";
 
 const WelcomePage = () => createPage(
     {
-        name: "welcome",
         context: {},
         mount: function(){
-            return createTemplate({}, 'div', [    
-                DynamicMessage(`Welcome Page!`),
-                RedirectTo('Counter Page', '/counter')
-            ])
+            return createTemplateElement('div', {},
+                {
+                    children: [    
+                        DynamicMessage(`Welcome Page!`),
+                        RedirectTo('Counter Page', '/counter')
+                    ]
+                }
+            )
         },
         onMount: function(ref) {
             console.log('hello!');

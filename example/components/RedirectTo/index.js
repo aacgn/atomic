@@ -1,4 +1,4 @@
-import { createOrganism, navigateTo } from "../../../src/index";
+import { createOrganismElement, navigateTo } from "../../../src/index";
 
 import "./index.css";
 
@@ -6,13 +6,20 @@ function onClickSpan(path) {
     navigateTo(path);
 }
 
-const RedirectTo = (msg, path) => createOrganism(
+const RedirectTo = (msg, path) => createOrganismElement(
+    'span',  
     { 
-        onClick: () => onClickSpan(path), 
-        style: { 'color': 'blue', 'cursor': 'pointer', 'text-decoration': 'underline' },
-        textContent: msg
+        style: { 
+            'color': 'blue', 
+            'cursor': 'pointer', 
+            'text-decoration': 'underline'
+        }
     },
-    'span'
+    { 
+        eventListener: 'click',
+        eventHandler: () => onClickSpan(path),
+        textContent: msg
+    }
 );
 
 export default RedirectTo;
