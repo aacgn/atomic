@@ -1,20 +1,20 @@
-import { unmountPage, mountPage } from "../functions/mount";
-import { AppRouterType } from "../enums/app-router-type.enum";
+import { unmountPage, mountPage, mountTransitionPage, unmountTransitionPage } from "../functions/mount";
+import { AtomicRouterMode } from "../enums/atomic-router-mode.enum";
 
 export class AtomicRouter {
     constructor(props) {
-        const { routes, mode } = props;
 
-        if (routes === undefined || mode === undefined)
-            throw 'Route and mode object fields are mandatory.';
+        const { routes, mode, transitionPage } = props;
 
         this._routes = routes;
+        this._mode = mode;
+        this._transitionPage = transitionPage;
 
         this._parentDOMNode = null;
         this._previousPageRendered = null;
 
-        switch(mode) {
-            case AppRouterType.HISTORY:
+        switch(this._mode) {
+            case AtomicRouterMode.HISTORY:
                 this.currentPath = () => {
                     const path = window.location.pathname;
                     return path ? path : '/';
@@ -28,7 +28,7 @@ export class AtomicRouter {
                 };
                 this._useWindowHistoryChangeInterceptor();
                 break;
-            case AppRouterType.HASH:
+            case AtomicRouterMode.HASH:
                 this.currentPath = () => {
                     const path = location.hash.slice(1).toLowerCase();
                     return path ? path : '/';
@@ -47,6 +47,14 @@ export class AtomicRouter {
 
     setParentDOMNode(parentDOMNode) {
         this._parentDOMNode = parentDOMNode;
+    }
+
+    enableTransitionPage() {
+        mountTransitionPage(this._previousPageRendered, this._transitionPage);
+    }
+
+    disableTransitionPage() {
+        unmountTransitionPage(this._previousPageRendered, this._transitionPage);
     }
 
     _useWindowHistoryChangeInterceptor() {
@@ -93,6 +101,10 @@ export class AtomicRouter {
         const matchRoute = this._routes.find(r => r.path === this.currentPath());
         if (matchRoute) {
             const page = matchRoute.page;
+            window.postMessage( {
+                hasAtomicSignature: true,
+                event: "_startMicrofrontRequest"
+            });
             mountPage(page, this._parentDOMNode);
             this._previousPageRendered = page;
         }

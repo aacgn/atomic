@@ -1,4 +1,4 @@
-import { createTemplateElement, createPage, updateContext } from "../../../src/index";
+import { createTemplate, createPage, updateContext } from "../../../src/index";
 
 import "./index.css";
 
@@ -7,20 +7,23 @@ import RedirectTo from "../../components/RedirectTo/index";
 
 const CounterPage = () => createPage(
     {
+        name: "welcome",
         context: {
             counter: 0
         },
         mount: function() {
             const counter = this.context.counter;
 
-            return createTemplateElement('div', {}, 
-                {
+            return createTemplate({
+                tag: "div",
+                attr: {},
+                props: {
                     children: [    
                         DynamicMessage(`Counter: ${counter}`),
                         RedirectTo('Welcome Page', '/')
                     ]
                 }
-            );
+            });
         },
         onMount: function(ref) {
             setInterval(() => {

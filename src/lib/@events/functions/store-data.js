@@ -1,10 +1,13 @@
 import { AtomicPublicEvents } from "../../@core/enums/atomic-public-events.enum";
 
-export function navigateTo(path) {
+export function storeData(name, data) {
     const navigateData = { 
         hasAtomicSignature: true,
-        event: AtomicPublicEvents.NAVIGATE,
-        data: path
+        event: AtomicPublicEvents.STORE,
+        data: {
+            name: name,
+            data: data
+        }
     };
 
     window.postMessage(navigateData);
