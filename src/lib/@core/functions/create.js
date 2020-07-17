@@ -41,42 +41,50 @@ function createVDOMElement(tag, attr, props) {
     }
 }
 
-export function createAtomElement(tag, attr, props) {
+export function createAtom(config) {
+    const { tag, attr, props } = config;
 
     const { children, ...filteredProps } = props;
 
     const vDOMElement = createVDOMElement(tag, attr, filteredProps);
 
     return {...vDOMElement,
-        type: vDOMType.ATOM_ELEMENT
+        type: vDOMType.ATOM
     }
 }
 
-export function createMoleculeElement(tag, attr, props) {
+export function createMolecule(config) {
+    const { tag, attr, props } = config;
+
     const vDOMElement = createVDOMElement(tag, attr, props);
 
     return {...vDOMElement,
-        type: vDOMType.MOLECULE_ELEMENT
+        type: vDOMType.MOLECULE
     }
 }
 
-export function createOrganismElement(tag, attr, props) {
+export function createOrganism(config) {
+    const { tag, attr, props } = config;
+
     const vDOMElement = createVDOMElement(tag, attr, props);
 
     return {...vDOMElement,
-        type: vDOMType.ORGANISM_ELEMENT
+        type: vDOMType.ORGANISM
     }
 }
 
-export function createTemplateElement(tag, attr, props) {
+export function createTemplate(config) {
+    const { tag, attr, props } = config;
+
     const vDOMElement = createVDOMElement(tag, attr, props);
 
     return {...vDOMElement,
-        type: vDOMType.TEMPLATE_ELEMENT
+        type: vDOMType.TEMPLATE
     }
 }
 
-export function createMicrofrontWrapperElement(attr, props) {
+export function createMicroFrontendWrapper(config) {
+    const { attr, props } = config;
 
     const { src, href, ...filteredAttr } = attr;
 
@@ -86,34 +94,28 @@ export function createMicrofrontWrapperElement(attr, props) {
 
     return {
         ...vDOMElement,
-        type: vDOMType.MICROFRONT_WRAPPER_ELEMENT,
+        type: vDOMType.MICRO_FRONTEND_WRAPPER,
         props: {
             ...vDOMElement.props,
-            baseUrl: props.baseUrl
+            url: props.url
         }
     }
 }
 
-export function createElement(tag, attr, props) {
-    const vDOMElement = createVDOMElement(tag, attr, props);
-
-    return {...vDOMElement,
-        type: vDOMType.ELEMENT
-    }
-}
-
 export function createPage(props) {
-    const { mount, context, methods, onMount, onUnmount } = props;
+    const { name, context, methods, mount, onMount, onUnmount } = props;
 
     return {
         type: vDOMType.PAGE,
         props: {
-            mount: mount,
+            name: name,
             context: context,
             methods: methods,
+            mount: mount,
             onMount: onMount,
             onUnmount: onUnmount
         },
+        childDOM: null,
         parentDOMNode: null
     }
 }

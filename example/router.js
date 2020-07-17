@@ -3,6 +3,8 @@ import { AtomicRouter } from "../src";
 import WelcomePage from "./pages/WelcomePage/index";
 import CounterPage from "./pages/CounterPage";
 
+import TransitionPage from "./pages/TransitionPage";
+
 const routes = [
     {
         path: '/',
@@ -16,7 +18,8 @@ const routes = [
 
 const Router = new AtomicRouter({
     routes: routes,
-    mode: "history"
+    mode: "history",
+    transitionPage: TransitionPage()
 });
 
 export default Router;

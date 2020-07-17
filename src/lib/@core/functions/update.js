@@ -7,7 +7,7 @@ export function updateContext(ref, contextAttr, contextVal) {
     ref.props.context[contextAttr] = contextVal;
 
     if (initialContext !== ref.props.context) {
-        unmountVDOMElementTree(ref.parentDOMNode);
-        mountVDOMElements(ref.props.mount(), ref.parentDOMNode);
+        unmountVDOMElementTree(ref.parentDOMNode, ref.childDOM);
+        ref.childDOM = mountVDOMElements(ref.props.mount(), ref.parentDOMNode);
     }
 }

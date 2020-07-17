@@ -1,7 +1,9 @@
 import { vDOMType } from "../enums/v-dom-type.enum";
+import { CustomWindowVariable } from "../enums/custom-window-variable.enum";
+import { AtomicPrivateEvents } from "../enums/atomic-private-events";
 
-function mountMicrofrontWrapper(microfrontWrapper, parentDOMNode) {
-    const { attr, props } = microfrontWrapper;
+function mountMicroFrontendWrapper(microFrontendWrapper, parentDOMNode) {
+    const { attr, props } = microFrontendWrapper;
 
     const domNode = document.createElement("iframe");
 
@@ -11,7 +13,7 @@ function mountMicrofrontWrapper(microfrontWrapper, parentDOMNode) {
     domNode.sandbox.add("allow-forms");
     domNode.frameBorder = "0";
     
-    microfrontWrapper.dom = domNode;
+    microFrontendWrapper.dom = domNode;
 
     if (attr.id !== undefined) {
         domNode.id = attr.id;
@@ -26,7 +28,14 @@ function mountMicrofrontWrapper(microfrontWrapper, parentDOMNode) {
     }
 
     if (props.url !== undefined) {
+
+        window.postMessage({
+            hasAtomicSignature: true,
+            event: AtomicPrivateEvents.START_MICRO_FRONTEND_REQUEST
+        }, "*");
+
         domNode.addEventListener("load", async () => {
+            const contentWindow = domNode.contentWindow;
             const contentDocument = domNode.contentDocument;
             const containerHTMLDocument = document.implementation.createHTMLDocument();
             const containerHTML = await fetch(props.url, { mode: "cors", referrerPolicy: "origin-when-cross-origin"})
@@ -42,11 +51,20 @@ function mountMicrofrontWrapper(microfrontWrapper, parentDOMNode) {
                 const containerBase = document.createElement("base");
                 containerBase.href = props.url;
                 containerHTMLDocument.head.insertAdjacentElement("afterbegin", containerBase);
+                if (contentWindow) {
+                    Object.defineProperty(contentWindow, CustomWindowVariable.ATOMIC_CONTEXT_STORE, { value: window[CustomWindowVariable.ATOMIC_CONTEXT_STORE] });
+                }
                 if (contentDocument) {
                     contentDocument.write(containerHTMLDocument.documentElement.innerHTML);
                     contentDocument.close();
                 }
             }
+
+            window.postMessage({
+                hasAtomicSignature: true,
+                event: AtomicPrivateEvents.END_MICRO_FRONTEND_REQUEST
+            }, "*");
+            
         }, { once: true });
     }
 
@@ -98,32 +116,27 @@ function mountVDOMElement(vDOMElement, parentDOMNode) {
     if (props.children !== undefined) {
         props.children.forEach(child => {
             switch(child.type) {
-                case vDOMType.MICROFRONT_WRAPPER_ELEMENT:
-                    mountMicrofrontWrapper(child, domNode);
-                    break;
-                case vDOMType.ELEMENT:
-                    if (type !== vDOMType.ELEMENT && type !== vDOMType.PAGE)
-                        throw `${vDOMType.ELEMENT} must be a child of ${vDOMType.PAGE} or another ${vDOMType.ELEMENT}.`;
-                    mountVDOMElement(child, domNode);
-                    break;
-                case vDOMType.TEMPLATE_ELEMENT:
+                case vDOMType.MICRO_FRONTEND_WRAPPER:
+                    mountMicroFrontendWrapper(child, domNode);
+                    break;          
+                case vDOMType.TEMPLATE:
                     if (type !== vDOMType.PAGE)
-                        throw `${vDOMType.TEMPLATE_ELEMENT} must be a child of ${vDOMType.PAGE}.`;
+                        throw `${vDOMType.TEMPLATE} must be a child of ${vDOMType.PAGE}.`;
                     mountVDOMElement(child, domNode);
                     break;
-                case vDOMType.ORGANISM_ELEMENT:
-                    if (type !== vDOMType.TEMPLATE_ELEMENT)
-                        throw `${vDOMType.ORGANISM_ELEMENT} must be a child of ${vDOMType.TEMPLATE_ELEMENT}.`;
+                case vDOMType.ORGANISM:
+                    if (type !== vDOMType.TEMPLATE)
+                        throw `${vDOMType.ORGANISM} must be a child of ${vDOMType.TEMPLATE}.`;
                     mountVDOMElement(child, domNode);
                     break;
-                case vDOMType.MOLECULE_ELEMENT:
-                    if (type !== vDOMType.ORGANISM_ELEMENT)
-                        throw  `${vDOMType.MOLECULE_ELEMENT} must be a child of ${vDOMType.ORGANISM_ELEMENT}.`;
+                case vDOMType.MOLECULE:
+                    if (type !== vDOMType.ORGANISM)
+                        throw  `${vDOMType.MOLECULE} must be a child of ${vDOMType.ORGANISM}.`;
                     mountVDOMElement(child, domNode);
                     break;
-                case vDOMType.ATOM_ELEMENT:
-                    if (type !== vDOMType.MOLECULE_ELEMENT)
-                        throw  `${vDOMType.ATOM_ELEMENT} must be a child of ${vDOMType.MOLECULE_ELEMENT}.`;
+                case vDOMType.ATOM:
+                    if (type !== vDOMType.MOLECULE)
+                        throw  `${vDOMType.ATOM} must be a child of ${vDOMType.MOLECULE}.`;
                     mountVDOMElement(child, domNode);
                     break;
                 default:
@@ -141,41 +154,52 @@ function mountVDOMElement(vDOMElement, parentDOMNode) {
     return domNode;
 }
 
-export function unmountVDOMElementTree(parentDOMNode) {
-    if (parentDOMNode) {
-        parentDOMNode.innerHTML = "";
-    }
+export function unmountVDOMElementTree(parentDOMNode, childDOM) {
+    parentDOMNode.removeChild(childDOM);
+}
+
+export function unmountTransitionPage(page, transitionPage) {
+    page.childDOM.removeAttribute("display");
+    unmountPage(transitionPage);
 }
 
 export function unmountPage(page) {
     if (page) {
 
-        const { props, parentDOMNode } = page;
+        const { props } = page;
 
         if (props.onUnmount !== undefined) {
             props.onUnmount(page);
         }
 
-        parentDOMNode.innerHTML = "";
+        unmountVDOMElementTree(page.parentDOMNode, page.childDOM);
 
+        page.childDOM = null;
         page.parentDOMNode = null;
+
+        // Clear any openned javascript intervals
+        for (var i = setTimeout(function() {}, 0); i > 0; i--) {
+            window.clearInterval(i);
+            window.clearTimeout(i);
+            if (window.cancelAnimationFrame) window.cancelAnimationFrame(i);
+        }
     }
 }
 
 export function mountVDOMElements(vDOMElementsTree, parentDOMNode) {
     if (vDOMElementsTree && parentDOMNode) {
         switch(vDOMElementsTree.type) {
-            case vDOMType.ELEMENT:
-            case vDOMType.TEMPLATE_ELEMENT:
-                mountVDOMElement(vDOMElementsTree, parentDOMNode);
-                break;
-            case vDOMType.MICROFRONT_WRAPPER_ELEMENT:
-                mountMicrofrontWrapper(vDOMElementsTree, parentDOMNode);
-                break;
+            case vDOMType.MICRO_FRONTEND_WRAPPER:
+                return mountMicroFrontendWrapper(vDOMElementsTree, parentDOMNode);
             default:
-                throw `Only ${vDOMType.ELEMENT}, ${vDOMType.MICROFRONT_WRAPPER_ELEMENT} or ${vDOMType.TEMPLATE_ELEMENT} are allowed to be a child of a ${vDOMType.PAGE}.`;
+                return mountVDOMElement(vDOMElementsTree, parentDOMNode);
         }
     }
+}
+
+export function mountTransitionPage(page, transitionPage) {
+    page.childDOM.setAttribute("display", "none");
+    mountPage(transitionPage, page.parentDOMNode);
 }
 
 export function mountPage(page, parentDOMNode) {
@@ -186,9 +210,13 @@ export function mountPage(page, parentDOMNode) {
         if (type !== vDOMType.PAGE)
             throw `Only a ${vDOMType.PAGE} can be passed through router.`;
 
+
+        if (props.name !== undefined && props.context !== undefined)
+            window[CustomWindowVariable.ATOMIC_CONTEXT_STORE][props.name] = props.context;
+
         if (props.mount !== undefined) {
             const vDOMElementsTree = props.mount();
-            mountVDOMElements(vDOMElementsTree, parentDOMNode);
+            page.childDOM = mountVDOMElements(vDOMElementsTree, parentDOMNode);
         }
 
         if (props.onMount !== undefined) {

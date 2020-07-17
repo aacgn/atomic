@@ -1,25 +1,21 @@
-import { createOrganismElement, navigateTo } from "../../../src/index";
+import { createOrganism, navigateTo } from "../../../src/index";
 
 import "./index.css";
 
-function onClickSpan(path) {
-    navigateTo(path);
-}
-
-const RedirectTo = (msg, path) => createOrganismElement(
-    'span',  
-    { 
+const RedirectTo = (msg, path) => createOrganism({
+    tag: "span",
+    attr: {
         style: { 
             'color': 'blue', 
             'cursor': 'pointer', 
             'text-decoration': 'underline'
         }
     },
-    { 
+    props: {
         eventListener: 'click',
-        eventHandler: () => onClickSpan(path),
+        eventHandler: () => navigateTo(path),
         textContent: msg
     }
-);
+});
 
 export default RedirectTo;

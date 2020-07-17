@@ -1,4 +1,4 @@
-export const AppRouterType = {
+export const AtomicRouterMode = {
     HISTORY: "history",
     HASH: "hash"
 }

@@ -1,19 +1,19 @@
-export function dispatchEvent(event, data, DOMNodeIds = []) {
+import { AtomicPublicEvents } from "../../@core/enums/atomic-public-events.enum";
+
+export function dispatchEvent(event, data, DOMNodeIds) {
   const messageData = {
     hasAtomicSignature: true,
     event: event,
-    data: data
+    data: {
+      data: data
+    }
   }
 
-  if (DOMNodeIds) {
-    DOMNodeIds.forEach(DOMNodeId => {
-      const DOMNode = document.getElementById(DOMNodeId);
-      if (DOMNode && DOMNode.contentWindow) {
-        DOMNode.contentWindow.postMessage(messageData, '*');
-      }
-    });
-  } else {
-    window.postMessage(messageData);
-  }
+  DOMNodeIds.forEach(DOMNodeId => {
+    const DOMNode = document.getElementById(DOMNodeId);
+    if (DOMNode && DOMNode.contentWindow) {
+      DOMNode.contentWindow.postMessage(messageData, '*');
+    }
+  });
   
 }
