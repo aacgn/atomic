@@ -43,7 +43,9 @@ export class Atomic {
                     case AtomicPrivateEvents.END_MICRO_FRONTEND_REQUEST:
                         this._handleMicrofrontRequest -= 1;
                         if (this._handleMicrofrontRequest === 0)
-                            this._router.disableTransitionPage();
+                            setTimeout(() => {
+                                this._router.disableTransitionPage();
+                            }, 1000);
                         break;
                     default:
                         break;
