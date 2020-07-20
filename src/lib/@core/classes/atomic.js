@@ -23,13 +23,13 @@ export class Atomic {
                     case AtomicPublicEvents.NAVIGATE:
                         this._router.navigateTo(data.data);
                         break;
-                    case [AtomicPublicEvents.STORE]:
+                    case AtomicPublicEvents.STORE:
                         if (data.data)
                             this._atomicContextStore[data.data.name] = data.data.data;
                         break;
                     case AtomicPublicEvents.CUSTOM_EVENT:
                         if (data.data) {
-                            const customEvent = new CustomEvent(data.data.event, {
+                            const customEvent = new CustomEvent(data.data.name, {
                                 detail: data.data.data
                             });
                             window.dispatchEvent(customEvent);

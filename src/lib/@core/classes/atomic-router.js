@@ -10,6 +10,8 @@ export class AtomicRouter {
         this._mode = mode;
         this._transitionPage = transitionPage;
 
+        this._isTransitionPageEnable = false;
+
         this._parentDOMNode = null;
         this._previousPageRendered = null;
 
@@ -50,11 +52,14 @@ export class AtomicRouter {
     }
 
     enableTransitionPage() {
-        mountTransitionPage(this._previousPageRendered, this._transitionPage);
+        if (!this._isTransitionPageEnable)
+            mountTransitionPage(this._previousPageRendered, this._transitionPage);
+            this._isTransitionPageEnable = true;
     }
 
     disableTransitionPage() {
         unmountTransitionPage(this._previousPageRendered, this._transitionPage);
+        this._isTransitionPageEnable = false;
     }
 
     _useWindowHistoryChangeInterceptor() {

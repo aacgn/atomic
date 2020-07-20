@@ -79,7 +79,7 @@ Atomic has a boiler template available with webpack, webpack-dev-server and babe
 #### Atomic
 
 ```javascript
-import { Atomic } from "@atomic-project/atomic";
+import { Atomic } from "@aacgn/atomic";
 import Router from "./router";
 
 import "./global.css";
@@ -152,7 +152,7 @@ window.postMessage(postMessageData, "*");
 #### Atomic Router
 
 ```javascript
-import { AtomicRouter } from "@atomic-project/atomic";
+import { AtomicRouter } from "@aacgn/atomic";
 
 import LoginPage from "../pages/LoginPage";
 import DashboardPage from "../pages/DashboardPage";
@@ -247,7 +247,7 @@ We can use it in Atomic as the following implementation:
 
 ```javascript
 
-import { createAtom } from "@atomic-project/atomic";
+import { createAtom } from "@aacgn/atomic";
 
 import "./index.css";
 
@@ -273,7 +273,7 @@ We can use it in Atomic as the following implementation:
 
 ```javascript
 
-import { createMolecule } from "@atomic-project/atomic";
+import { createMolecule } from "@aacgn/atomic";
 
 import BaseInput from "./BaseInput";
 import BaseButton from  "./BaseButton";
@@ -306,7 +306,7 @@ We can use it in Atomic as the following implementation:
 
 ```javascript
 
-import { createOrganism } from "@atomic-project/atomic";
+import { createOrganism } from "@aacgn/atomic";
 
 import Logo from "./Logo";
 import NavBar from "./NavBar";
@@ -341,7 +341,7 @@ We can use it in Atomic as the following implementation:
 
 ```javascript
 
-import { createTemplate } from "@atomic-project/atomic";
+import { createTemplate } from "@aacgn/atomic";
 
 import TopBar from "./TopBar";
 import CatalogCarousel from "./CatalogCarousel";
@@ -373,7 +373,7 @@ Pages are specific instances of templates. Here, placeholder content is replaced
 
 ```javascript
 
-import { createPage } from "@atomic-project/atomic";
+import { createPage } from "@aacgn/atomic";
 
 import DashboardTemplate from "./DashboardTemplate";
 
@@ -407,7 +407,7 @@ Going to a more pratice way, imagine that everything exemplified previously unti
 
 DashboardMicroFrontendWrapper
 ```javascript
-import { createMicroFrontendWrapper } from "@atomic-project/atomic";
+import { createMicroFrontendWrapper } from "@aacgn/atomic";
 
 import "./index.css";
 
@@ -426,7 +426,7 @@ export default DashboardMicroFrontendWrapper;
 DashboardPage
 ```javascript
 
-import { createPage } from "@atomic-project/atomic";
+import { createPage } from "@aacgn/atomic";
 
 import DashboardMicroFrontendWrapper from "./DashboardMicroFrontendWrapper";
 
@@ -467,25 +467,25 @@ Atomic also provide for it's shell application a couple of auxiliar functions. C
 Examples:
 
 ```javascript
-import { dispatchEvent } from "@atomic-project/atomic";
+import { dispatchEvent } from "@aacgn/atomic";
 
 dispatchEvent("carouselItems", 12, ["dashboard-micro-frontend-wrapper"]);
 ``` 
 
 ```javascript
-import { navigateTo } from "@atomic-project/atomic";
+import { navigateTo } from "@aacgn/atomic";
 
 navigateTo("/");
 ``` 
 
 ```javascript
-import { storeData } from "@atomic-project/atomic";
+import { storeData } from "@aacgn/atomic";
 
 storeData("dashboard", {carouselItems: [], recommendationItems: []});
 ``` 
 
 ```javascript
-import { mapContextStore } from "@atomic-project/atomic";
+import { mapContextStore } from "@aacgn/atomic";
 
 mapContextStore("dashboard");
 ``` 

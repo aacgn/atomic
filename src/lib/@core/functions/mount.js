@@ -159,7 +159,7 @@ export function unmountVDOMElementTree(parentDOMNode, childDOM) {
 }
 
 export function unmountTransitionPage(page, transitionPage) {
-    page.childDOM.removeAttribute("display");
+    page.childDOM.removeAttribute("display");   
     unmountPage(transitionPage);
 }
 

@@ -8,6 +8,7 @@ export * from "./lib/@core/functions/update";
 export * from "./lib/@events/functions/navigate-to";
 export * from "./lib/@events/functions/store-data";
 export * from "./lib/@events/functions/dispatch-event";
+export * from "./lib/@store/functions/map-context-store";
 
 // PUBLIC ENUMS
 export * from "./lib/@core/enums/atomic-public-events.enum";

@@ -4,9 +4,7 @@ export function dispatchEvent(event, data, DOMNodeIds) {
   const messageData = {
     hasAtomicSignature: true,
     event: event,
-    data: {
-      data: data
-    }
+    data: data
   }
 
   DOMNodeIds.forEach(DOMNodeId => {
