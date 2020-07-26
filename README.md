@@ -20,7 +20,7 @@ Atomic is a front-end library, based on iframes, that enables javascript develop
 
 ### Atomicfy
 
-Atomicfy is a Spotify clone that was built with Atomic, using micro-frontends from Vue.js, React.js, Angular 9 and Svelte. If you got any curiosity about how was made, please check our [repository link](https://github.com/atomic-project/atomicfy).
+Atomicfy is a Spotify clone that was built with Atomic, using micro-frontends from Vue.js, React.js, Angular 9 and Svelte. If you got any curiosity about how was made, please check our [repository link](https://github.com/aacgn/atomicfy).
 
 ## 🔎 Atomic Micro-Frontends Concepts
 
