@@ -52,14 +52,16 @@ export class AtomicRouter {
     }
 
     enableTransitionPage() {
-        if (!this._isTransitionPageEnable)
+        if (this._transitionPage && !this._isTransitionPageEnable) {
             mountTransitionPage(this._previousPageRendered, this._transitionPage);
-            this._isTransitionPageEnable = true;
+            this._isTransitionPageEnable = true;   
+        }
     }
 
     disableTransitionPage() {
-        unmountTransitionPage(this._previousPageRendered, this._transitionPage);
-        this._isTransitionPageEnable = false;
+        if (this._transitionPage) 
+            unmountTransitionPage(this._previousPageRendered, this._transitionPage);
+            this._isTransitionPageEnable = false;
     }
 
     _useWindowHistoryChangeInterceptor() {
